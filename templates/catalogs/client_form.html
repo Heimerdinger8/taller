@@ -5,6 +5,7 @@
   <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Guardar</button>
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a href="{% url 'catalogs:client_list' %}" class="btn btn-secondary ml-2">Cancelar</a>
   </form>
 {% endblock %}

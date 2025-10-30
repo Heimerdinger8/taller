@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search{% endblock %}
+
+{% block content %}
+    <nav class="navbar mb-4">
+        <ul class="nav-list">
+            <li class="nav-item"><a href="{% url 'service_order' %}" class="btn btn-primary">Nueva Orden de Servicio</a></li>
+            <li class="nav-item"><a href="#" class="btn btn-info">Historial de Órdenes</a></li>
+            <li class="nav-item"><a href="{% url 'inventory' %}" class="btn btn-success">Inventario de Refacciones</a></li>
+            <li class="nav-item"><a href="{% url 'logout' %}" class="btn btn-danger">Cerrar Sesión</a></li>
+        </ul>
+    </nav>
+
+    <h2 class="text-center">Búsqueda de Clientes</h2>
+    <div class="input-group mb-4">
+        <input type="text" class="form-control" placeholder="Buscar por nombre, matrícula o modelo de motocicleta" required minlength="2">
+        <div class="input-group-append">
+            <button class="btn btn-primary" type="button">Buscar</button>
+        </div>
+    </div>
+{% endblock %}

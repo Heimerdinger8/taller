@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="text-center">
+    <h1 class="mb-4">Eliminar Cliente</h1>
+    <p class="lead">¿Estás seguro de que quieres eliminar a <strong>{{ object.name }}</strong>?</p>
+    <form method="post" class="mt-4">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Confirmar</button>
+        <a href="{% url 'catalogs:client_list' %}" class="btn btn-secondary ml-2">Cancelar</a>
+    </form>
+  </div>
+{% endblock %}
