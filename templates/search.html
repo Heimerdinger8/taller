@@ -4,12 +4,14 @@
 {% block title %}Search{% endblock %}
 
 {% block content %}
+    <h1 class="text-center mb-4">Taller Mecanico <br> Rango</h1>
     <nav class="navbar mb-4">
         <ul class="nav-list">
             <li class="nav-item"><a href="{% url 'service_order' %}" class="btn btn-primary">Nueva Orden de Servicio</a></li>
             <li class="nav-item"><a href="#" class="btn btn-info">Historial de Órdenes</a></li>
             <li class="nav-item"><a href="{% url 'inventory' %}" class="btn btn-success">Inventario de Refacciones</a></li>
-            <li class="nav-item"><a href="{% url 'logout' %}" class="btn btn-danger">Cerrar Sesión</a></li>
+            <li class="nav-item"><a href="{% url 'catalogs:mechanic_create' %}" class="btn btn-primary">Registrar Mecánico</a></li>
+            <li class="nav-item"><a href="{% url 'logout' %}" class="btn btn-danger"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></a></li>
         </ul>
     </nav>
 
