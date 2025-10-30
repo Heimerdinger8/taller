@@ -1,34 +1,14 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inventario de Refacciones</title>
+
+{% block title %}Inventario de Refacciones{% endblock %}
+
+{% block extra_head %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <style>
-        .image-drop-zone {
-            border: 2px dashed #ccc;
-            padding: 10px;
-            cursor: pointer;
-            text-align: center;
-            min-height: 100px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .image-drop-zone.bg-secondary {
-            background-color: #6c757d;
-        }
-        .preview-image {
-            max-width: 100%;
-            max-height: 80px;
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body class="dark-mode">
+{% endblock %}
+
+{% block content %}
     <div class="container mt-3">
         <div class="d-flex justify-content-between align-items-center">
             <a href="{% url 'search' %}" class="btn btn-secondary">Volver a la Búsqueda</a>
@@ -87,54 +67,4 @@
             </div>
         </div>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const dropZones = document.querySelectorAll('.image-drop-zone');
-
-            dropZones.forEach(dropZone => {
-                const fileInput = dropZone.querySelector('input[type="file"]');
-
-                dropZone.addEventListener('click', () => fileInput.click());
-
-                dropZone.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    dropZone.classList.add('bg-secondary');
-                });
-
-                dropZone.addEventListener('dragleave', (e) => {
-                    e.preventDefault();
-                    dropZone.classList.remove('bg-secondary');
-                });
-
-                dropZone.addEventListener('drop', (e) => {
-                    e.preventDefault();
-                    dropZone.classList.remove('bg-secondary');
-                    const file = e.dataTransfer.files[0];
-                    handleFile(file, dropZone);
-                });
-
-                fileInput.addEventListener('change', (e) => {
-                    const file = e.target.files[0];
-                    handleFile(file, dropZone);
-                });
-            });
-
-            function handleFile(file, dropZone) {
-                if (file && file.type.startsWith('image/')) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        // Remove existing text and preview
-                        dropZone.innerHTML = '';
-                        const previewImage = document.createElement('img');
-                        previewImage.src = e.target.result;
-                        previewImage.classList.add('preview-image');
-                        dropZone.appendChild(previewImage);
-                    }
-                    reader.readAsDataURL(file);
-                }
-            }
-        });
-    </script>
-</body>
-</html>
+{% endblock %}

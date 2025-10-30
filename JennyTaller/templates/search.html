@@ -1,13 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Search</title>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Search{% endblock %}
+
+{% block extra_head %}
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/css/login.css"> <!-- Link to custom CSS for dark mode -->
-</head>
-<body class="dark-mode">
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
+{% block content %}
     <div class="container mt-3">
         <div class="d-flex justify-content-end">
             <a href="{% url 'logout' %}" class="btn btn-danger">Cerrar Sesión</a>
@@ -57,5 +58,4 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+{% endblock %}
