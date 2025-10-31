@@ -34,3 +34,23 @@ class MechanicListView(ListView):
     model = Mechanic
     template_name = 'catalogs/mechanic_list.html'
     context_object_name = 'mechanics'
+
+class MechanicUpdateView(UpdateView):
+
+    model = Mechanic
+
+    template_name = 'catalogs/mechanic_form.html'
+
+    fields = '__all__'
+
+    success_url = reverse_lazy('catalogs:mechanic_list')
+
+
+
+class MechanicDeleteView(DeleteView):
+
+    model = Mechanic
+
+    template_name = 'catalogs/mechanic_confirm_delete.html'
+
+    success_url = reverse_lazy('catalogs:mechanic_list')

@@ -3,7 +3,7 @@
 {% block title %}Registrar Mecánico{% endblock %}
 
 {% block content %}
-  <h2 class="text-center mb-4">Registrar Nuevo Mecánico</h2>
+  <h2 class="text-center mb-4">Registrar Nuevo Mecánico al taller</h2>
   <form method="post">
     {% csrf_token %}
     <div class="form-group">
@@ -21,6 +21,7 @@
     <div class="text-center mt-4">
       <button type="submit" class="btn btn-primary">Guardar Mecánico</button>
       <a href="{% url 'catalogs:mechanic_list' %}" class="btn btn-secondary ml-2">Cancelar</a>
+      <a href="{% url 'search' %}" class="btn btn-secondary ml-2">Regresar a la búsqueda</a>
     </div>
   </form>
 {% endblock %}

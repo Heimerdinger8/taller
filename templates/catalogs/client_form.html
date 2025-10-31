@@ -7,5 +7,6 @@
     {{ form.as_p }}
     <button type="submit" class="btn btn-primary">Guardar</button>
     <a href="{% url 'catalogs:client_list' %}" class="btn btn-secondary ml-2">Cancelar</a>
+    <a href="{% url 'search' %}" class="btn btn-secondary ml-2">Regresar a la búsqueda</a>
   </form>
 {% endblock %}

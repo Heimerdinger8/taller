@@ -3,7 +3,7 @@
 import os
 import sys
 
-
+#hola
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'JennyTaller.settings')
