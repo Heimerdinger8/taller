@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Historial de Órdenes (con buscador){% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-end mb-4">
+        <a href="{% url 'logout' %}" class="btn btn-danger">Cerrar Sesión</a>
+    </div>
+    <h2 class="text-center">Historial de Órdenes de Servicio</h2>
+    <form method="get" action="{% url 'history' %}">
+        <div class="input-group mb-4">
+            <input type="text" name="q" class="form-control" placeholder="Buscar por nombre de cliente, placa o modelo de motocicleta" value="{{ request.GET.q }}">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="submit">Buscar</button>
+            </div>
+        </div>
+    </form>
+
+    {% if service_orders %}
+        <div class="accordion" id="serviceOrdersAccordion">
+            {% for order in service_orders %}
+                <div class="card">
+                    <div class="card-header" id="heading{{ order.id }}">
+                        <h2 class="mb-0">
+                            <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapse{{ order.id }}" aria-expanded="true" aria-controls="collapse{{ order.id }}">
+                                Orden #{{ order.order_number }} - {{ order.client.name }} - {{ order.date }}
+                            </button>
+                        </h2>
+                    </div>
+
+                    <div id="collapse{{ order.id }}" class="collapse" aria-labelledby="heading{{ order.id }}" data-parent="#serviceOrdersAccordion">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <h4>Datos del Cliente</h4>
+                                    <p><strong>Nombre:</strong> {{ order.client.name }}</p>
+                                    <p><strong>Domicilio:</strong> {{ order.client.address }}</p>
+                                    <p><strong>Teléfono:</strong> {{ order.client.phone }}</p>
+                                    <p><strong>Email:</strong> {{ order.client.email }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    <h4>Datos del Vehículo</h4>
+                                    <p><strong>Marca:</strong> {{ order.vehicle_brand }}</p>
+                                    <p><strong>Modelo:</strong> {{ order.vehicle_model }}</p>
+                                    <p><strong>Color:</strong> {{ order.vehicle_color }}</p>
+                                    <p><strong>Placas:</strong> {{ order.vehicle_plates }}</p>
+                                    <p><strong>No. Serie:</strong> {{ order.vehicle_serial_number }}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <h4>Detalles del Servicio</h4>
+                            <p><strong>Mecánico:</strong> {{ order.mechanic.name }}</p>
+                            <p><strong>Falla Principal:</strong> {{ order.main_failure }}</p>
+                            <p><strong>Otros Detalles:</strong> {{ order.other_details }}</p>
+                            <hr>
+                            <h4>Presupuesto</h4>
+                            <p><strong>Presupuesto:</strong> ${{ order.budget }}</p>
+                            <p><strong>Anticipo:</strong> ${{ order.down_payment }}</p>
+                            <p><strong>Saldo Restante:</strong> ${{ order.remaining_payment }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center">No se encontraron órdenes de servicio.</p>
+    {% endif %}
+    <div class="text-center mt-4">
+        <a href="{% url 'search' %}" class="btn btn-secondary">Volver a la búsqueda</a>
+    </div>
+{% endblock %}
