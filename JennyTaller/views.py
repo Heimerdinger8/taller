@@ -22,7 +22,7 @@ def search_view(request):
     }
     return render(request, 'search.html', context)
 
-def history_view(request):
+def historial_view(request):
     query = request.GET.get('q')
     if query:
         service_orders = ServiceOrder.objects.filter(
@@ -37,7 +37,7 @@ def history_view(request):
         'query': query,
         'service_orders': service_orders
     }
-    return render(request, 'history.html', context)
+    return render(request, 'historial.html', context)
 
 def inventory_view(request):
     return render(request, 'inventory.html')
@@ -100,4 +100,4 @@ class ServiceOrderView(View):
         service_order.save()
         service_order.order_number = service_order.id
         service_order.save()
-        return redirect('history')
+        return redirect('historial')
