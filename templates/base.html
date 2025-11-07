@@ -12,9 +12,12 @@
     {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <button id="darkModeToggle" class="dark-mode-toggle">
-        <img id="darkModeIcon" src="{% static 'img/sol.png' %}" alt="Modo Oscuro">
-    </button>
+    <div class="dark-mode-switch-container">
+        <label class="switch">
+            <input type="checkbox" id="darkModeToggle">
+            <span class="slider round"></span>
+        </label>
+    </div>
     <div class="main-content-wrapper">
         <div class="content-card">
             {% block content %}
@@ -22,6 +25,7 @@
         </div>
     </div>
     <script src="{% static 'js/main.js' %}"></script>
+    <script src="{% static 'js/dark_mode.js' %}"></script>
     {% block extra_body %}{% endblock %}
 </body>
 </html>

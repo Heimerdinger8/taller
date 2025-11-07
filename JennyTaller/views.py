@@ -2,11 +2,10 @@ from django.contrib.auth import logout
 from django.shortcuts import render, redirect
 from django.views import View
 from catalogs.models import Mechanic, Client, ServiceOrder
+from django.db.models import Q
 
 def login_view(request):
     if request.method == 'POST':
-        # Dummy authentication logic
-        # In a real application, you would check credentials here
         return redirect('search')
     return render(request, 'login.html')
 
@@ -14,8 +13,31 @@ def logout_view(request):
     logout(request)
     return redirect('login')
 
+
+
 def search_view(request):
-    return render(request, 'search.html')
+    service_orders = ServiceOrder.objects.all().select_related('client', 'mechanic')
+    context = {
+        'service_orders': service_orders
+    }
+    return render(request, 'search.html', context)
+
+def history_view(request):
+    query = request.GET.get('q')
+    if query:
+        service_orders = ServiceOrder.objects.filter(
+            Q(client__name__icontains=query) |
+            Q(vehicle_plates__icontains=query) |
+            Q(vehicle_model__icontains=query)
+        ).select_related('client', 'mechanic')
+    else:
+        service_orders = ServiceOrder.objects.all().select_related('client', 'mechanic')
+
+    context = {
+        'query': query,
+        'service_orders': service_orders
+    }
+    return render(request, 'history.html', context)
 
 def inventory_view(request):
     return render(request, 'inventory.html')
@@ -35,7 +57,7 @@ class ServiceOrderView(View):
                 'address': request.POST.get('domicilio'),
                 'phone': request.POST.get('telefono'),
                 'whatsapp': request.POST.get('whatsapp'),
-                'receive_promotions': False,  # O manejarlo desde el form
+                'receive_promotions': False,
             }
         )
 
@@ -53,11 +75,10 @@ class ServiceOrderView(View):
             vehicle_serial_number=request.POST.get('no_serie'),
             vehicle_motor_number=request.POST.get('no_motor'),
             vehicle_plates=request.POST.get('placa'),
-            # Assuming arrival and departure are not in the form yet
-            arrival_date=request.POST.get('fecha'), # Placeholder
-            arrival_time=request.POST.get('hora'), # Placeholder
-            departure_date=request.POST.get('fecha'), # Placeholder
-            departure_time=request.POST.get('hora'), # Placeholder
+            arrival_date=request.POST.get('fecha'),
+            arrival_time=request.POST.get('hora'),
+            departure_date=request.POST.get('fecha'),
+            departure_time=request.POST.get('hora'),
             mileage=request.POST.get('kilometraje'),
             gas_level=request.POST.get('gasolina'),
             main_failure=request.POST.get('falla_principal'),
@@ -76,6 +97,7 @@ class ServiceOrderView(View):
             down_payment=request.POST.get('anticipo'),
             remaining_payment=request.POST.get('restan'),
         )
+        service_order.save()
         service_order.order_number = service_order.id
         service_order.save()
-        return redirect('search')
+        return redirect('history')

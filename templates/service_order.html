@@ -313,26 +313,35 @@
             </div>
 
         <div class="row mt-4 justify-content-center">
-            <div class="col-md-6">
+            <div class="col-md-8">
                 <div class="section-title">PRESUPUESTO GRAL.</div>
                 <div class="card p-3">
                     <div class="row">
-                        <div class="col-md-6 form-group">
-                            <label for="anticipo">ANTICIPO</label>
+                        <div class="col-md-4 form-group">
+                            <label for="budget">PRESUPUESTO</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">$</span>
                                 </div>
-                                <input type="number" id="anticipo" name="anticipo" class="form-control text-right" required min="0" step="0.01">
+                                <input type="number" id="budget" name="budget" class="form-control text-right" required min="0" step="0.01">
                             </div>
                         </div>
-                        <div class="col-md-6 form-group">
-                            <label for="restan">RESTAN</label>
+                        <div class="col-md-4 form-group">
+                            <label for="down_payment">ANTICIPO</label>
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text">$</span>
                                 </div>
-                                <input type="number" id="restan" name="restan" class="form-control text-right" required min="0" step="0.01">
+                                <input type="number" id="down_payment" name="down_payment" class="form-control text-right" required min="0" step="0.01">
+                            </div>
+                        </div>
+                        <div class="col-md-4 form-group">
+                            <label for="remaining_balance">RESTAN</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text">$</span>
+                                </div>
+                                <input type="number" id="remaining_balance" name="remaining_balance" class="form-control text-right" readonly min="0" step="0.01">
                             </div>
                         </div>
                     </div>
@@ -348,7 +357,7 @@
 
         <div class="text-center mt-4">
             <button type="submit" class="btn btn-primary">Guardar Orden</button>
-            <a href="{% url 'search' %}" class="btn btn-secondary ml-2">Cancelar</a>
+            <a href="{% url 'search' %}" class="btn btn-secondary ml-2">Volver a la búsqueda</a>
         </div>
     </form>
 
@@ -417,6 +426,20 @@
 
             // Initialize value on load
             gasolinaValue.textContent = `${gasolinaRange.value}%`;
+
+            const budgetInput = document.getElementById('budget');
+            const downPaymentInput = document.getElementById('down_payment');
+            const remainingBalanceInput = document.getElementById('remaining_balance');
+
+            function calculateRemainingBalance() {
+                const budget = parseFloat(budgetInput.value) || 0;
+                const downPayment = parseFloat(downPaymentInput.value) || 0;
+                const remainingBalance = budget - downPayment;
+                remainingBalanceInput.value = remainingBalance.toFixed(2);
+            }
+
+            budgetInput.addEventListener('input', calculateRemainingBalance);
+            downPaymentInput.addEventListener('input', calculateRemainingBalance);
         });
     </script>
 {% endblock %}

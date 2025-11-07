@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const toggleButton = document.getElementById('darkModeToggle');
-    const darkModeIcon = document.getElementById('darkModeIcon');
+    const darkModeToggle = document.getElementById('darkModeToggle');
     const body = document.body;
 
     // Check for user's preferred mode in localStorage or system preference
@@ -9,26 +8,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (savedTheme === 'dark' || (savedTheme === null && prefersDark)) {
         body.classList.add('dark-mode');
-        darkModeIcon.src = '/static/img/luna.png'; // Assuming Django static URL
-        darkModeIcon.alt = 'Modo Claro';
+        darkModeToggle.checked = true; // Set the switch to checked if dark mode is active
         console.log('Dark mode applied on load.');
     } else {
         body.classList.remove('dark-mode');
-        darkModeIcon.src = '/static/img/sol.png'; // Assuming Django static URL
-        darkModeIcon.alt = 'Modo Oscuro';
+        darkModeToggle.checked = false; // Set the switch to unchecked if light mode is active
         console.log('Light mode applied on load.');
     }
 
-    toggleButton.addEventListener('click', () => {
-        body.classList.toggle('dark-mode');
-        if (body.classList.contains('dark-mode')) {
-            darkModeIcon.src = '/static/img/luna.png'; // Assuming Django static URL
-            darkModeIcon.alt = 'Modo Claro';
+    darkModeToggle.addEventListener('change', () => {
+        if (darkModeToggle.checked) {
+            body.classList.add('dark-mode');
             localStorage.setItem('theme', 'dark');
             console.log('Dark mode activated by toggle.');
         } else {
-            darkModeIcon.src = '/static/img/sol.png'; // Assuming Django static URL
-            darkModeIcon.alt = 'Modo Oscuro';
+            body.classList.remove('dark-mode');
             localStorage.setItem('theme', 'light');
             console.log('Light mode activated by toggle.');
         }

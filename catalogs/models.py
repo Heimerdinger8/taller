@@ -1,19 +1,22 @@
 from django.db import models
+from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator, EmailValidator
 
 class Mechanic(models.Model):
-    name = models.CharField(max_length=100)
-    phone = models.CharField(max_length=10, blank=True, null=True)
+    name = models.CharField(max_length=100, validators=[RegexValidator(r'^[a-zA-Z\s]*$', 'Name can only contain letters and spaces.')])
+    phone_regex = RegexValidator(regex=r'^\\d{10}$', message="El número de teléfono debe tener 10 dígitos.")
+    phone = models.CharField(validators=[phone_regex], max_length=10, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
 
     def __str__(self):
         return self.name
 
 class Client(models.Model):
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, validators=[RegexValidator(r'^[a-zA-Z\s]*$', 'Name can only contain letters and spaces.')])
     address = models.CharField(max_length=200)
-    phone = models.CharField(max_length=10)
-    whatsapp = models.CharField(max_length=10, blank=True, null=True)
-    email = models.EmailField()
+    phone_regex = RegexValidator(regex=r'^\\d{10}$', message="El número de teléfono debe tener 10 dígitos.")
+    phone = models.CharField(validators=[phone_regex], max_length=10)
+    whatsapp = models.CharField(validators=[phone_regex], max_length=10, blank=True, null=True)
+    email = models.EmailField(max_length=254, validators=[EmailValidator(message='Enter a valid email address.')]) # Standard max length for email
     receive_promotions = models.BooleanField(default=False)
 
     def __str__(self):
@@ -22,37 +25,54 @@ class Client(models.Model):
 class ServiceOrder(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     mechanic = models.ForeignKey(Mechanic, on_delete=models.CASCADE)
-    order_number = models.CharField(max_length=20)
+    order_number = models.CharField(max_length=20, unique=True)
     date = models.DateField()
     time = models.TimeField()
     vehicle_brand = models.CharField(max_length=50)
     vehicle_model = models.CharField(max_length=50)
     vehicle_color = models.CharField(max_length=30)
-    vehicle_serial_number = models.CharField(max_length=50)
-    vehicle_motor_number = models.CharField(max_length=50)
-    vehicle_plates = models.CharField(max_length=10)
+    vehicle_serial_number = models.CharField(max_length=50, unique=True)
+    vehicle_motor_number = models.CharField(max_length=50, unique=True)
+    vehicle_plates = models.CharField(max_length=10, unique=True)
     arrival_date = models.DateField()
     arrival_time = models.TimeField()
     departure_date = models.DateField()
     departure_time = models.TimeField()
-    mileage = models.IntegerField()
-    gas_level = models.CharField(max_length=20)
-    main_failure = models.TextField()
-    engine_status = models.CharField(max_length=20)
-    electrical_system_status = models.CharField(max_length=20)
-    brakes_status = models.CharField(max_length=20)
-    suspension_status = models.CharField(max_length=20)
-    fluid_level_status = models.CharField(max_length=20)
-    tires_status = models.CharField(max_length=20)
-    tuning_status = models.CharField(max_length=20)
-    other_details = models.TextField(blank=True, null=True)
+    mileage = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(1000000)])
+    GAS_LEVEL_CHOICES = [
+        ('Empty', 'Empty'),
+        ('1/4', '1/4'),
+        ('1/2', '1/2'),
+        ('3/4', '3/4'),
+        ('Full', 'Full'),
+    ]
+    STATUS_CHOICES = [
+        ('Good', 'Good'),
+        ('Regular', 'Regular'),
+        ('Bad', 'Bad'),
+    ]
+    gas_level = models.CharField(max_length=20, choices=GAS_LEVEL_CHOICES)
+    main_failure = models.TextField(max_length=500)
+    engine_status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    electrical_system_status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    brakes_status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    suspension_status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    fluid_level_status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    tires_status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    tuning_status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    other_details = models.TextField(max_length=500, blank=True, null=True)
     image = models.ImageField(upload_to='service_orders/', blank=True, null=True)
     warranty_included = models.BooleanField(default=False)
     warranty_valid_from = models.DateField(blank=True, null=True)
     warranty_valid_to = models.DateField(blank=True, null=True)
     warranty_exception = models.CharField(max_length=200, blank=True, null=True)
-    down_payment = models.DecimalField(max_digits=10, decimal_places=2)
-    remaining_payment = models.DecimalField(max_digits=10, decimal_places=2)
+    budget = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
+    down_payment = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
+    remaining_payment = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(0)], blank=True)
+
+    def save(self, *args, **kwargs):
+        self.remaining_payment = self.budget - self.down_payment
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Order {self.order_number} - {self.client.name}"
