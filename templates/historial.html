@@ -55,9 +55,19 @@
                             <p><strong>Otros Detalles:</strong> {{ order.other_details }}</p>
                             <hr>
                             <h4>Presupuesto</h4>
-                            <p><strong>Presupuesto:</strong> ${{ order.budget }}</p>
-                            <p><strong>Anticipo:</strong> ${{ order.down_payment }}</p>
-                            <p><strong>Saldo Restante:</strong> ${{ order.remaining_payment }}</p>
+                            <form method="post" action="{% url 'catalogs:service_order_update_payment' order.pk %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="budget-{{ order.id }}">Presupuesto:</label>
+                                    <input type="number" step="0.01" class="form-control" id="budget-{{ order.id }}" name="budget" value="{{ order.budget|default_if_none:'' }}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="down_payment-{{ order.id }}">Anticipo:</label>
+                                    <input type="number" step="0.01" class="form-control" id="down_payment-{{ order.id }}" name="down_payment" value="{{ order.down_payment|default_if_none:'' }}">
+                                </div>
+                                <p><strong>Saldo Restante:</strong> ${{ order.remaining_payment }}</p>
+                                <button type="submit" class="btn btn-primary mt-2">Actualizar Pago</button>
+                            </form>
                         </div>
                     </div>
                 </div>

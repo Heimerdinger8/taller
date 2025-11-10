@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}¿Estás seguro?{% endblock %}
+
+{% block content %}
+    <div class="container text-center">
+        <h2 class="mb-4">Eliminar Refacción</h2>
+        <p class="lead">¿Estás seguro de que quieres eliminar la refacción "{{ object.name }}"? Esta acción no se puede deshacer.</p>
+        <form method="post" class="mt-4">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Sí, estoy seguro, eliminar</button>
+            <a href="{% url 'inventory' %}" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+{% endblock %}

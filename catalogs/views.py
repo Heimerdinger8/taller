@@ -1,6 +1,7 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from .models import Client, Mechanic
+from .models import Client, Mechanic, ServiceOrder, SparePart
+from .forms import SparePartForm
 
 class ClientListView(ListView):
     model = Client
@@ -54,3 +55,45 @@ class MechanicDeleteView(DeleteView):
     template_name = 'catalogs/mechanic_confirm_delete.html'
 
     success_url = reverse_lazy('catalogs:mechanic_list')
+
+
+class ServiceOrderPaymentUpdateView(UpdateView):
+    model = ServiceOrder
+    fields = ['budget', 'down_payment']
+    success_url = reverse_lazy('historial')
+
+    def form_valid(self, form):
+        # Ensure that the remaining payment is recalculated upon update
+        instance = form.save(commit=False)
+        if instance.budget is not None and instance.down_payment is not None:
+            instance.remaining_payment = instance.budget - instance.down_payment
+        else:
+            instance.remaining_payment = 0
+        instance.save()
+        return super().form_valid(form)
+
+
+class SparePartListView(ListView):
+    model = SparePart
+    template_name = 'inventory.html'
+    context_object_name = 'spareparts'
+
+
+class SparePartCreateView(CreateView):
+    model = SparePart
+    template_name = 'catalogs/sparepart_form.html'
+    form_class = SparePartForm
+    success_url = reverse_lazy('inventory')
+
+
+class SparePartUpdateView(UpdateView):
+    model = SparePart
+    template_name = 'catalogs/sparepart_form.html'
+    form_class = SparePartForm
+    success_url = reverse_lazy('inventory')
+
+
+class SparePartDeleteView(DeleteView):
+    model = SparePart
+    template_name = 'catalogs/sparepart_confirm_delete.html'
+    success_url = reverse_lazy('inventory')

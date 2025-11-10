@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from catalogs.views import SparePartListView
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,6 +28,9 @@ urlpatterns = [
     path('historial/', views.historial_view, name='historial'),
     path('search/', views.search_view, name='search'),
     path('service_order/', views.ServiceOrderView.as_view(), name='service_order'),
-    path('inventory/', views.inventory_view, name='inventory'),
+    path('inventory/', SparePartListView.as_view(), name='inventory'),
     path('catalogs/', include('catalogs.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

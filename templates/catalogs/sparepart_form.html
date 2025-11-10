@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{% if object %}Actualizar{% else %}Agregar{% endif %} Refacción{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h2>{% if object %}Actualizar{% else %}Agregar{% endif %} Refacción</h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                                        {{ form.name }}
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="{{ form.quantity.id_for_label }}">{{ form.quantity.label }}</label>
+                                        {{ form.quantity }}
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="{{ form.price.id_for_label }}">{{ form.price.label }}</label>
+                                        {{ form.price }}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group mb-3">
+                                        <label for="{{ form.description.id_for_label }}">{{ form.description.label }}</label>
+                                        {{ form.description }}
+                                    </div>
+                                    <div class="form-group mb-3">
+                                        <label for="id_image">Imagen</label>
+                                        <div id="drop-zone" class="moto-placeholder p-3 text-center" style="border: 2px dashed #ccc; border-radius: 5px; cursor: pointer;">
+                                            Arrastra y suelta una imagen aquí o haz clic para seleccionarla
+                                            {{ form.image }}
+                                            <img id="preview-image" src="{% if form.instance.image %}{{ form.instance.image.url }}{% endif %}" alt="Vista previa de la imagen" style="max-width: 100%; max-height: 200px; margin-top: 10px; {% if not form.instance.image %}display: none;{% endif %}">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary">{% if object %}Actualizar{% else %}Guardar{% endif %}</button>
+                                <a href="{% url 'inventory' %}" class="btn btn-secondary">Cancelar</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block extra_body %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const dropZone = document.getElementById('drop-zone');
+    const fileInput = document.getElementById('id_image');
+    const previewImage = document.getElementById('preview-image');
+
+    // Hide the default file input
+    if (fileInput) {
+        fileInput.style.display = 'none';
+    }
+
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    dropZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        dropZone.classList.add('bg-secondary');
+    });
+
+    dropZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('bg-secondary');
+    });
+
+    dropZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropZone.classList.remove('bg-secondary');
+        const file = e.dataTransfer.files[0];
+        fileInput.files = e.dataTransfer.files;
+        handleFile(file);
+    });
+
+    fileInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        handleFile(file);
+    });
+
+    function handleFile(file) {
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                dropZone.childNodes[0].nodeValue = ''; // Clear the text
+            }
+            reader.readAsDataURL(file);
+        }
+    }
+});
+</script>
+{% endblock extra_body %}

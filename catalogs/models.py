@@ -2,10 +2,10 @@ from django.db import models
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator, EmailValidator
 
 class Mechanic(models.Model):
-    name = models.CharField(max_length=100, validators=[RegexValidator(r'^[a-zA-Z\s]*$', 'Name can only contain letters and spaces.')])
+    name = models.CharField("Nombre", max_length=100, validators=[RegexValidator(r'^[a-zA-Z\s]*$', 'Name can only contain letters and spaces.')])
     phone_regex = RegexValidator(regex=r'^\\d{10}$', message="El número de teléfono debe tener 10 dígitos.")
-    phone = models.CharField(validators=[phone_regex], max_length=10, blank=True, null=True)
-    email = models.EmailField(blank=True, null=True)
+    phone = models.CharField("Teléfono", validators=[phone_regex], max_length=10, blank=True, null=True)
+    email = models.EmailField("Correo Electrónico", blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -82,6 +82,21 @@ class InventoryItem(models.Model):
     name = models.CharField(max_length=100)
     has_item = models.BooleanField()
     specification = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class SparePart(models.Model):
+    name = models.CharField("Nombre", max_length=100)
+    description = models.TextField("Descripción", blank=True, null=True)
+    quantity = models.PositiveIntegerField("Cantidad", default=0)
+    price = models.DecimalField("Costo Unitario", max_digits=10, decimal_places=2, validators=[MinValueValidator(0)])
+    image = models.ImageField("Imagen", upload_to='spare_parts/', blank=True, null=True)
+
+    @property
+    def total_cost(self):
+        return self.quantity * self.price
 
     def __str__(self):
         return self.name
