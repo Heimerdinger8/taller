@@ -1,7 +1,7 @@
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from .models import Client, Mechanic, ServiceOrder, SparePart
-from .forms import SparePartForm
+from .forms import SparePartForm, MechanicForm
 
 class ClientListView(ListView):
     model = Client
@@ -28,7 +28,7 @@ class ClientDeleteView(DeleteView):
 class MechanicCreateView(CreateView):
     model = Mechanic
     template_name = 'catalogs/mechanic_form.html'
-    fields = '__all__'
+    form_class = MechanicForm
     success_url = reverse_lazy('catalogs:mechanic_list')
 
 class MechanicListView(ListView):
@@ -42,7 +42,7 @@ class MechanicUpdateView(UpdateView):
 
     template_name = 'catalogs/mechanic_form.html'
 
-    fields = '__all__'
+    form_class = MechanicForm
 
     success_url = reverse_lazy('catalogs:mechanic_list')
 
