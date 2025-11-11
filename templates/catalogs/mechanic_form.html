@@ -13,17 +13,47 @@
                     <div class="card-body">
                         <form method="post">
                             {% csrf_token %}
+                            
+                            {% if form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    {% for error in form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
                             <div class="form-group mb-3">
                                 <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
                                 {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.name.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="form-group mb-3">
                                 <label for="{{ form.phone.id_for_label }}">{{ form.phone.label }}</label>
                                 {{ form.phone }}
+                                {% if form.phone.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.phone.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="form-group mb-3">
                                 <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
                                 {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger">
+                                        {% for error in form.email.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="text-center mt-4">
                                 <button type="submit" class="btn btn-primary">{% if object %}Actualizar{% else %}Guardar{% endif %} Mecánico</button>
